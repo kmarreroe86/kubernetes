@@ -1,0 +1,157 @@
+Install and set up the kubectl tool:
+    https://kubernetes.io/docs/tasks/tools/
+
+Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+-List all resources:
+kubectl get all
+
+-Apply changes:
+apply -f <file_name>
+apply -f mongo-config.yaml
+
+-Run image:
+kubectl run <name_of_the_running_instance> --image <image_to_run>
+kubectl run nginx --image=nginx
+
+-Get help:
+kubectl --help
+
+-Get nodes info*:
+kubectl get nodes -o wide
+
+-Get namespace:
+kubectl get namespace
+
+-Change default context:
+kubectl config set-context --current --namespace=NAMESPACE
+
+-See current context:
+kubectl config current-context
+
+-See cluster info:
+kubectl cluster-info
+
+-Execute sh inside the container
+kubectl exec -it <container_name> -- sh
+
+
+=== Pods ===
+-Get help for creation
+kubectl create pod --help
+
+-Create pod using yaml:
+kubectl create -f pod-definition.yml
+
+-Get pods:
+kubectl get pods
+
+-Get logs:
+kubectl logs <pod_name>
+
+-Get pods in certain namespace:
+kubectl get pods -n istio-system
+kubectl get pods -n istio-system -o wide
+
+-Get pod with yaml format
+kubectl get pod <pod_name> -o yaml
+
+-Get extended help:
+kubectl describe pod <pod_name>
+
+-Delete pod:
+kubectl delete pod <podname>
+
+-Get config and secrets
+kubectl get configmap
+kubectl get secret
+
+
+=== ReplicaSets ===
+-Get help for creation
+kubectl create replicaset --help
+-List al contexts
+kubectl config get-contexts
+
+-List replica-sets:
+kubectl get replicasets
+
+-Edit replicaset:
+kubectl edit rs <replicaset_name>
+
+-Delete replicaset:
+kubectl delete replicaset <replicase_name>
+
+-Scale replica-set:
+ Update replicas to desired number in the definition file and run:
+kubectl replace -f <replicaset-definition.yaml>
+ or
+kubectl scale --replicas=6 -f <replicaset-definition.yaml> || => will not update the file
+ or
+kubectl scale rs new-replica-set-name --replicas=5
+
+
+=== Deployments ===
+-Get help for creation
+kubectl create deployment --help
+
+-Get extended help:
+kubectl describe deployment <deployment_name>
+
+-Expose deployment outside cluster:
+kubectl expose deployment <deployment_name> --type=NodePort
+
+-Update the image(won't update the yaml file)
+kubectl set image deployment <deployment_name> <name_of_the_container> = new_image
+kubectl set image deployment myapp-deployment nginx=nginx:1.18-perl
+
+-Edit yaml file;
+kubectl edit deployment <deployment_name> --record
+
+=== Rollouts ===
+-Show status
+kubectl rollout status <deployment_name>
+
+-Show history
+kubectl rollout history <deployment_name>
+
+-Apply a rollout to rollback a dployment operation
+kubectl rollout undo <deployment_name>
+
+
+=== Services ===
+-List services:
+kubectl get services
+
+-Get extended help:
+kubectl describe service <service_name>
+
+-Create service:
+kubectl create -f service-definition.yaml
+
+-Delete:
+kubectl delete service <servicename>
+
+
+
+
+
+==================================================================================================================================================================================================
+˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜
+==================================================================================================================================================================================================
+Planetfitness:
+
+-Login console:
+prod_eks
+nonprod_eks
+
+kubectl get pods -n istio-system
+kubectl delete pod prometheus-765967884f-pwrrb -n istio-system
+kubectl get pods | grep ^mobile-service -> filter by partial pods name
+------------------------------------------------------------------------------------------------------------------------
+cde_prod_eks
+k9s
+: -> cambiar entre recursos pods, services etc
+ctrl-c -> salir
+/ -> filtrar
+scape -> salir
