@@ -1,3 +1,4 @@
+Course: https://thoughtworks.udemy.com/course/learn-kubernetes/learn/lecture/21126556#content Password.Connect2
 Install and set up the kubectl tool:
     https://kubernetes.io/docs/tasks/tools/
 
