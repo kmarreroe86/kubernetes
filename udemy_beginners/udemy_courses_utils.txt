@@ -6,10 +6,10 @@ ReplicaSet:
 
 Deployment:
  Strategies:
-  -Recreate: Remove all old versions and create the newones, provoke an application downtime until new versions is created
+  -Recreate: Remove all old versions and create the new ones, provoke an application downtime until new versions is created
   -Rolling Update(default): Destroy one older version and creates a newone until all old versions are replaced
 
 Services:
  NodePort: Serves as external entry point for incoming requests, enables service to external access (Access from outside the cluster)
- ClusterIp: Creates a virtual ip inside the cluster to enable communicatio between services.(Access only inside the cluster)
+ ClusterIp: Creates a virtual ip inside the cluster to enable communication between services.(Access only inside the cluster)
  LoadBalancer: Provides load balancer for applications

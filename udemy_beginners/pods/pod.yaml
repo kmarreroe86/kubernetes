@@ -11,3 +11,6 @@ spec:
       image: nginx
     # - name: busybox -> more than one image per pod
       # image: busybox
+    # env:
+      #   - name: var_name
+      #     value: var_value

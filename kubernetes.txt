@@ -21,11 +21,8 @@ kubectl --help
 -Get nodes info*:
 kubectl get nodes -o wide
 
--Get namespace:
-kubectl get namespace
-
--Change default context:
-kubectl config set-context --current --namespace=NAMESPACE
+-List al contexts
+kubectl config get-contexts
 
 -See current context:
 kubectl config current-context
@@ -36,13 +33,19 @@ kubectl cluster-info
 -Execute sh inside the container
 kubectl exec -it <container_name> -- sh
 
+-Generate pod manifest:
+kubectl run nginx --image=nginx --dry-run=client -o yaml
 
-=== Pods ===
+
+=== === === === === === === === === === === === === === === === === === === === === Pods === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create pod --help
 
 -Create pod using yaml:
 kubectl create -f pod-definition.yml
+
+-Create pod in certain namespace
+kubectl create -f pod-definition.yml --namespace=dev
 
 -Get pods:
 kubectl get pods
@@ -56,6 +59,8 @@ kubectl get pods -n istio-system -o wide
 
 -Get pod with yaml format
 kubectl get pod <pod_name> -o yaml
+kubectl get pod <pod_name> -o json
+kubectl get pod <pod_name> -o wide
 
 -Get extended help:
 kubectl describe pod <pod_name>
@@ -63,16 +68,19 @@ kubectl describe pod <pod_name>
 -Delete pod:
 kubectl delete pod <podname>
 
--Get config and secrets
-kubectl get configmap
-kubectl get secret
+-Edit pod specification:
+kubectl edit pod <pod name>
+
+-Extract pod configuration:
+kubectl get pod <pod-name> -o yaml > pod-definition.yaml
+
+-Create pod and exposing it using command:
+kubectl run custom-nginx --image=nginx --port=8080
 
 
-=== ReplicaSets ===
+=== === === === === === === === === === === === === === === === === === === === === ReplicaSets === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create replicaset --help
--List al contexts
-kubectl config get-contexts
 
 -List replica-sets:
 kubectl get replicasets
@@ -85,14 +93,14 @@ kubectl delete replicaset <replicase_name>
 
 -Scale replica-set:
  Update replicas to desired number in the definition file and run:
-kubectl replace -f <replicaset-definition.yaml>
+kubectl replace -f <replicaset-definition-updated.yaml>
  or
 kubectl scale --replicas=6 -f <replicaset-definition.yaml> || => will not update the file
  or
 kubectl scale rs new-replica-set-name --replicas=5
 
 
-=== Deployments ===
+=== === === === === === === === === === === === === === === === === === === === === Deployments === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create deployment --help
 
@@ -109,7 +117,17 @@ kubectl set image deployment myapp-deployment nginx=nginx:1.18-perl
 -Edit yaml file;
 kubectl edit deployment <deployment_name> --record
 
-=== Rollouts ===
+-Generate deployment yaml file:(Doesn't create the resource)
+kubectl create deployment --image=nginx nginx --dry-run -o yaml
+
+-Create deployment using command:
+kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
+
+-Create deployment in certain namespace using command:
+kubectl create deployment redis-deploy --image=redis --replicas=2 -n=dev-ns
+
+
+=== === === === === === === === === === === === === === === === === === === === Rollouts === === === === === === === === === === === === === === === === === === ===
 -Show status
 kubectl rollout status <deployment_name>
 
@@ -120,7 +138,7 @@ kubectl rollout history <deployment_name>
 kubectl rollout undo <deployment_name>
 
 
-=== Services ===
+=== === === === === === === === === === === === === === === === === === === === === Services === === === === === === === === === === === === === === === === === === === ===
 -List services:
 kubectl get services
 
@@ -133,9 +151,69 @@ kubectl create -f service-definition.yaml
 -Delete:
 kubectl delete service <servicename>
 
+-Expose a service using command:
+kubectl expose pod redis --port=6379 --name redis-service
 
 
+=== === === === === === === === === === === === === === === === === === === === === Namespaces === === === === === === === === === === === === === === === === === === === ===
+-Create namespace:
+kubectl apply -f namespace-dev.yaml
+kubectl create -f namespace-dev.yaml
+ or
+kubectl create namespace dev
 
+-Get namespace:
+kubectl get namespace
+
+-Get pods from all namespaces:
+kubectl get pods --all-namespaces
+
+-Change namespace in the current context:
+kubectl config set-context $(kubectl config current-context) --namespace=<namespace_name>
+
+
+=== === === === === === === === === === === === === === === === === === === === === ConfigMaps === === === === === === === === === === === === === === === === === === === ===
+-Create configmap imperative(command line):
+kubectl create configmap <config_name> --from-literal=<key> = <value>
+ex: kubectl create configmap app-config --from-literal=APP_COLOR=blue \
+    --from-literal=APP_COLOR_2=red
+
+ or
+
+kubectl create configmap <config_name> --from-file= <path_to_the_file>
+ex: kubectl create configmap app-config --from-file=app_config.properties
+
+-Create configmap declarative:
+kubectl create -f configmap_definition_file.yaml
+
+-Get configmap:
+kubectl get configmap 
+
+
+=== === === === === === === === === === === === === === === === === === === === === Secrets === === === === === === === === === === === === === === === === === === === ===
+*** in linux encode plain text to base 64 encode:
+echo -n 'mysql' | base64  => bXlzcWw=
+
+*** in linux decode plain text to base 64 encode:
+echo -n 'bXlzcWw=' | base64 --decode  => mysql
+
+-Create a secret imperative(command line):***Add multiple --from-literal for multiple key/value pair
+kubectl create secret generic <secret_name> --from-literal= <key> = <value>
+ex: kubectl create secret generic app-secret --from-literal=DB_host=mysql
+
+-Create secret using declarative:
+kubectl create secret generic <secret_name> --from-file= <path_to_file>
+ex: kubectl create secret generic app-secret --from-file=app_secret.properties
+
+-Get config and secrets
+kubectl get secret
+
+-Get secret with its values:
+kubectl get secret <secret_name> -o yaml
+
+=== === === === === === === === === === === === === ResourceQuota === === === === === === === === === === === === === === === === === === === === === ===
+kubectl apply -f compute_quota.yaml
+kubectl create -f compute_quota.yaml
 
 ==================================================================================================================================================================================================
 ˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜
@@ -156,3 +234,7 @@ k9s
 ctrl-c -> salir
 / -> filtrar
 scape -> salir
+
+
+link labss:  https://uklabs.kodekloud.com/courses/labs-certified-kubernetes-application-developer
+cupon: udemystudent030485
