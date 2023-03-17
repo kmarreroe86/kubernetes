@@ -6,9 +6,17 @@ metadata:
     app: nginx
     tier: frontend
 spec:
+  # serviceAccountName: serviceaccountname
+  # nodeSelector: # This label is in en node where you want to specifically deploy this node.
+    # size: large
   containers:
     - name: nginx
       image: nginx
+      # securityContext:
+        # runAsUser: 1000
+        # capabilities: # only supported at container level
+          # add: ["MAC_ADMIN"]
+
     # - name: busybox -> more than one image per pod
       # image: busybox
     # env:

@@ -1,8 +1,13 @@
-Course: https://thoughtworks.udemy.com/course/learn-kubernetes/learn/lecture/21126556#content Password.Connect2
+Course: https://thoughtworks.udemy.com/course/certified-kubernetes-application-developer/learn/lecture/12299434#announcements Password.Connect2
 Install and set up the kubectl tool:
     https://kubernetes.io/docs/tasks/tools/
 
 Cheatsheet: https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+
+Resources:
+https://www.linkedin.com/pulse/my-ckad-exam-experience-atharva-chauthaiwale/
+https://medium.com/@harioverhere/ckad-certified-kubernetes-application-developer-my-journey-3afb0901014
+https://github.com/lucassha/CKAD-resources
 
 -List all resources:
 kubectl get all
@@ -77,7 +82,9 @@ kubectl get pod <pod-name> -o yaml > pod-definition.yaml
 -Create pod and exposing it using command:
 kubectl run custom-nginx --image=nginx --port=8080
 
-
+-Execute command in a pod:
+kubectl exec <pod_name> -- whoami <command_to_execute>
+ex: kubectl exec ubuntu --
 === === === === === === === === === === === === === === === === === === === === === ReplicaSets === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create replicaset --help
@@ -117,8 +124,8 @@ kubectl set image deployment myapp-deployment nginx=nginx:1.18-perl
 -Edit yaml file;
 kubectl edit deployment <deployment_name> --record
 
--Generate deployment yaml file:(Doesn't create the resource)
-kubectl create deployment --image=nginx nginx --dry-run -o yaml
+-Generate deployment yaml file:(Doesn't create the resource, just creates the yaml file)
+kubectl create deployment --image=nginx nginx --dry-run=client -o yaml
 
 -Create deployment using command:
 kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
@@ -209,11 +216,42 @@ ex: kubectl create secret generic app-secret --from-file=app_secret.properties
 kubectl get secret
 
 -Get secret with its values:
-kubectl get secret <secret_name> -o yaml
+kubectl describe secret <secret_name> -o yaml
+
+
+=== === === === === === === === === === === === === ServiceAccount === === === === === === === === === === === === === === === === === === === === === ===
+-Create ServiceAccount:
+kubectl create Serviceaccount <serviceaccount_name>
+
+-Get service ServiceAccount
+kubectl get Serviceaccount
+
+-Create token for the serviceaccount:
+kubectl create token <serviceaccount_name>
+
+-Get info:
+kubectl describe sa <serviceaccount_name> => tokens is the name of the secret obejct holding the token that is use by application. To see it run then:
+kubectl describe secret <secret_name>
+
+
+=== === === === === === === === === === === === === Tain and Tolerations === === === === === === === === === === === === === === === === === === === === === ===
+***Taint: restric pods to be deployed in a node if not meet the requirements
+***Tolerations: scheduler to schedule pods with matching taints
+
+-Create a taint:
+kubectl tain nodes <node-name> key=value:<taint-effect>
+ex: kubectltaint nodes node1 app=blue:NoSchedule => If pod not meet the requirements then NoSchedule
+
 
 === === === === === === === === === === === === === ResourceQuota === === === === === === === === === === === === === === === === === === === === === ===
 kubectl apply -f compute_quota.yaml
 kubectl create -f compute_quota.yaml
+
+
+=== === === === === === === === === === === === === Nodes === === === === === === === === === === === === === === === === === === === === === ===
+-Add label to a node:
+kubectl label nodes <node_name> <label_key> = <label_value>
+ex: kubectl label node node-1 size=large
 
 ==================================================================================================================================================================================================
 ˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜
