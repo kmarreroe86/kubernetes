@@ -19,6 +19,8 @@ spec:
 
     # - name: busybox -> more than one image per pod
       # image: busybox
+    # - name: log-agent
+      # image: log-agent
     # env:
       #   - name: var_name
       #     value: var_value

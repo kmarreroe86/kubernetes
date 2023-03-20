@@ -58,6 +58,11 @@ kubectl get pods
 -Get logs:
 kubectl logs <pod_name>
 
+-Get logs for a multiple container pod(Needs to specify the container_name):
+kubectl logs <pod_name> <container_name>
+ or
+kubectl logs -f <pod_name> <container_name>
+
 -Get pods in certain namespace:
 kubectl get pods -n istio-system
 kubectl get pods -n istio-system -o wide
@@ -73,6 +78,9 @@ kubectl describe pod <pod_name>
 -Delete pod:
 kubectl delete pod <podname>
 
+-Delete all pods:
+kubectl delete pod --all
+
 -Edit pod specification:
 kubectl edit pod <pod name>
 
@@ -85,6 +93,14 @@ kubectl run custom-nginx --image=nginx --port=8080
 -Execute command in a pod:
 kubectl exec <pod_name> -- whoami <command_to_execute>
 ex: kubectl exec ubuntu --
+
+-Replace pod definition file:
+kubectl replace --force -f <new_file_path>
+
+-Ex read logs from app in elastic-stack namespace
+kubectl -n elastic-stack exec -it app -- cat /log/app.log
+
+
 === === === === === === === === === === === === === === === === === === === === === ReplicaSets === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create replicaset --help
@@ -252,6 +268,13 @@ kubectl create -f compute_quota.yaml
 -Add label to a node:
 kubectl label nodes <node_name> <label_key> = <label_value>
 ex: kubectl label node node-1 size=large
+
+
+=== === === === === === === === === === === === === Monitoring === === === === === === === === === === === === === === === === === === === === === ===
+-No in built solution in kubernetes
+Options: Prometheus, Elastick Stack, Datadog, Dynatrace
+
+-Metric Server option for worker nodes
 
 ==================================================================================================================================================================================================
 ˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜
