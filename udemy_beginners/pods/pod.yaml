@@ -5,10 +5,13 @@ metadata:
   labels:
     app: nginx
     tier: frontend
+  annotations:
+    buildversion: '1.32'
 spec:
   # serviceAccountName: serviceaccountname
   # nodeSelector: # This label is in en node where you want to specifically deploy this node.
     # size: large
+  restartPolicy: Never # When the pod should be restarted
   containers:
     - name: nginx
       image: nginx

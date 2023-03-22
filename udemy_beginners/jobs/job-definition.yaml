@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: math-add-job
+spec:
+  completions: 3 # numbers of pods to be created by this job. Pods are created one after the other, if one of them fails it will try to create another until completions number is met
+  parallelism: 3 # create this number of pods in parallel
+  backoffLimit: 25 # This is so the job does not quit before it succeeds.
+  template:
+    spec:
+      containers:
+      # Pod specification section
+        - name: math-add
+          image: ubuntu
+          command: ['expr', '3', '+', '2']
+      restartPolicy: Never
+            

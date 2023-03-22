@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: reporting-cron-job
+spec:
+  schedule: "*/1 * * * *" # ex: 30 21 * * *" -> runs at 21:30 every day 
+  jobTemplate:
+    spec: # this is the spec section of a job
+      completions: 3 # numbers of pods to be created by this job. Pods are created one after the other, if one of them fails it will try to create another until completions number is met
+      parallelism: 3 # create this number of pods in parallel
+      template:
+        spec:
+          containers:
+          # Pod specification section
+            - name: math-add
+              image: ubuntu
+              command: ['expr', '3', '+', '2']
+          restartPolicy: Never
+
+
+  

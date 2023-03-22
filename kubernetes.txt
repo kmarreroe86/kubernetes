@@ -55,14 +55,6 @@ kubectl create -f pod-definition.yml --namespace=dev
 -Get pods:
 kubectl get pods
 
--Get logs:
-kubectl logs <pod_name>
-
--Get logs for a multiple container pod(Needs to specify the container_name):
-kubectl logs <pod_name> <container_name>
- or
-kubectl logs -f <pod_name> <container_name>
-
 -Get pods in certain namespace:
 kubectl get pods -n istio-system
 kubectl get pods -n istio-system -o wide
@@ -74,6 +66,18 @@ kubectl get pod <pod_name> -o wide
 
 -Get extended help:
 kubectl describe pod <pod_name>
+
+-Get pod by label:
+kubectl get pods --selector <label=value>
+ex: kubectl get pods --selector app=App1
+
+-Get logs:
+kubectl logs <pod_name>
+
+-Get logs for a multiple container pod(Needs to specify the container_name):
+kubectl logs <pod_name> <container_name>
+ or
+kubectl logs -f <pod_name> <container_name>
 
 -Delete pod:
 kubectl delete pod <podname>
@@ -157,8 +161,14 @@ kubectl rollout status <deployment_name>
 -Show history
 kubectl rollout history <deployment_name>
 
+-Show history of specific revision
+kubectl rollout history <deployment_name> --revision=<rev_num>
+
 -Apply a rollout to rollback a dployment operation
 kubectl rollout undo <deployment_name>
+
+-Apply rollout to specific version
+kubectl rollout undo <deployment_name> --to-revision= <rev_num>
 
 
 === === === === === === === === === === === === === === === === === === === === === Services === === === === === === === === === === === === === === === === === === === ===
@@ -275,6 +285,19 @@ ex: kubectl label node node-1 size=large
 Options: Prometheus, Elastick Stack, Datadog, Dynatrace
 
 -Metric Server option for worker nodes
+
+
+=== === === === === === === === === === === === === === === === === === === === === Jobs === === === === === === === === === === === === === === === === === === === ===
+-Create a job:
+kubectl create -f <job-definition-file.yaml>
+kubectl apply -f <job-definition-file.yaml>
+
+-Get jobs:
+kubectl get jobs
+
+-Delete job:
+kubectl delete job <job-name>   => this will delete the pod created by this job
+
 
 ==================================================================================================================================================================================================
 ˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜
