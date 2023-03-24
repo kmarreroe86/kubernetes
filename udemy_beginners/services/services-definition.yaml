@@ -5,8 +5,21 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 80
-      targetPort: 80
-      nodePort: 30004 # port in the worker node from where the application will be accesible
+    - port: 80  # port in the service itself
+      targetPort: 80  # port where application is running. Services forward the request to this port
+      nodePort: 30004 # port in the worker node from where the application will be accesible from the outside (Range: 30000 - 32767)
   selector:
-    app: myapp # matches the label in the pod definition in the deployment
+    app: myapp # matches the labels in the pod definition in the deployment
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIp
+  ports:
+    - port: 80  # port in the service itself
+      targetPort: 80  # port where application is running. Services forward the request to this port
+  selector:
+    app: my-backend-app # matches the labels in the pod definition in the deployment

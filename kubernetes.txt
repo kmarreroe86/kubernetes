@@ -42,6 +42,7 @@ kubectl exec -it <container_name> -- sh
 kubectl run nginx --image=nginx --dry-run=client -o yaml
 
 
+
 === === === === === === === === === === === === === === === === === === === === === Pods === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create pod --help
@@ -78,6 +79,8 @@ kubectl logs <pod_name>
 kubectl logs <pod_name> <container_name>
  or
 kubectl logs -f <pod_name> <container_name>
+ or
+kubectl exec <pode_name> -- cat /log/app.log
 
 -Delete pod:
 kubectl delete pod <podname>
@@ -105,6 +108,7 @@ kubectl replace --force -f <new_file_path>
 kubectl -n elastic-stack exec -it app -- cat /log/app.log
 
 
+
 === === === === === === === === === === === === === === === === === === === === === ReplicaSets === === === === === === === === === === === === === === === === === === === === ===
 -Get help for creation
 kubectl create replicaset --help
@@ -125,6 +129,7 @@ kubectl replace -f <replicaset-definition-updated.yaml>
 kubectl scale --replicas=6 -f <replicaset-definition.yaml> || => will not update the file
  or
 kubectl scale rs new-replica-set-name --replicas=5
+
 
 
 === === === === === === === === === === === === === === === === === === === === === Deployments === === === === === === === === === === === === === === === === === === === === ===
@@ -154,6 +159,7 @@ kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
 kubectl create deployment redis-deploy --image=redis --replicas=2 -n=dev-ns
 
 
+
 === === === === === === === === === === === === === === === === === === === === Rollouts === === === === === === === === === === === === === === === === === === ===
 -Show status
 kubectl rollout status <deployment_name>
@@ -171,7 +177,12 @@ kubectl rollout undo <deployment_name>
 kubectl rollout undo <deployment_name> --to-revision= <rev_num>
 
 
+
 === === === === === === === === === === === === === === === === === === === === === Services === === === === === === === === === === === === === === === === === === === ===
+*** NodePort: Makes an internal pod accessible throught a port in the node.(Enables external access) (Range: 30000 - 32767), also does load balancing
+*** ClusterIp: Creates a virtual ip inside the cluster, to enable comunications with other services in the cluster(Enables internal access). Its the default type of service
+*** LoadBalancer: 
+
 -List services:
 kubectl get services
 
@@ -186,6 +197,7 @@ kubectl delete service <servicename>
 
 -Expose a service using command:
 kubectl expose pod redis --port=6379 --name redis-service
+
 
 
 === === === === === === === === === === === === === === === === === === === === === Namespaces === === === === === === === === === === === === === === === === === === === ===
@@ -205,6 +217,7 @@ kubectl get pods --all-namespaces
 kubectl config set-context $(kubectl config current-context) --namespace=<namespace_name>
 
 
+
 === === === === === === === === === === === === === === === === === === === === === ConfigMaps === === === === === === === === === === === === === === === === === === === ===
 -Create configmap imperative(command line):
 kubectl create configmap <config_name> --from-literal=<key> = <value>
@@ -221,6 +234,7 @@ kubectl create -f configmap_definition_file.yaml
 
 -Get configmap:
 kubectl get configmap 
+
 
 
 === === === === === === === === === === === === === === === === === === === === === Secrets === === === === === === === === === === === === === === === === === === === ===
@@ -260,6 +274,7 @@ kubectl describe sa <serviceaccount_name> => tokens is the name of the secret ob
 kubectl describe secret <secret_name>
 
 
+
 === === === === === === === === === === === === === Tain and Tolerations === === === === === === === === === === === === === === === === === === === === === ===
 ***Taint: restric pods to be deployed in a node if not meet the requirements
 ***Tolerations: scheduler to schedule pods with matching taints
@@ -269,9 +284,11 @@ kubectl tain nodes <node-name> key=value:<taint-effect>
 ex: kubectltaint nodes node1 app=blue:NoSchedule => If pod not meet the requirements then NoSchedule
 
 
+
 === === === === === === === === === === === === === ResourceQuota === === === === === === === === === === === === === === === === === === === === === ===
 kubectl apply -f compute_quota.yaml
 kubectl create -f compute_quota.yaml
+
 
 
 === === === === === === === === === === === === === Nodes === === === === === === === === === === === === === === === === === === === === === ===
@@ -280,11 +297,13 @@ kubectl label nodes <node_name> <label_key> = <label_value>
 ex: kubectl label node node-1 size=large
 
 
+
 === === === === === === === === === === === === === Monitoring === === === === === === === === === === === === === === === === === === === === === ===
 -No in built solution in kubernetes
 Options: Prometheus, Elastick Stack, Datadog, Dynatrace
 
 -Metric Server option for worker nodes
+
 
 
 === === === === === === === === === === === === === === === === === === === === === Jobs === === === === === === === === === === === === === === === === === === === ===
@@ -297,6 +316,59 @@ kubectl get jobs
 
 -Delete job:
 kubectl delete job <job-name>   => this will delete the pod created by this job
+
+
+
+=== === === === === === === === === === === === === === === === === === === === === Network Policy === === === === === === === === === === === === === === === === === === === ===
+-Create Network Policies:
+kubectl create -f <policy-name>
+
+-Get Network Policies:
+kubectl get networkpolicies
+
+-Describe:
+kubectl describe netpol <networkpoliciy_name>
+
+
+
+=== === === === === === === === === === === === === === === === === === === === === Persistente Volume === === === === === === === === === === === === === === === === === === === ===
+Reference: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes
+*** User creates persistent volume claim to use the storage
+    -PersistentVolumeClaim is binding to a PersistentVolume
+*** persistent volume is one-to-one with persistent volume claim
+*** When a persistent volume claim is deleted the persistent volume can do:
+    -Retain: PV persist until is deleted manually, cannot be used by other pvc
+    -Delete: PV gets deleted automatically when PVC is deleted
+    -Recycle: PV gets its data erased for be available to other PVC
+
+-Create volume:
+kubectl create -f pv-definition.yaml
+
+-Get volumes:
+kubectl get persistentvolume
+
+-Create persistent volume claim:
+kubectl create -f pvc-definition.yaml
+
+-Get persistent volume claim:
+kubectl get persistentvolumeclaim
+
+-Detele persistent volume claim:
+kubectl delete persistentvolumeclaim <pvc_name>
+
+
+
+
+=== === === === === === === === === === === === === === === === === === === === === Stateful Set === === === === === === === === === === === === === === === === === === === ===
+*** Same as a deployment, but pods are create in a sequencial order
+-Create Stateful Set:
+kubectl create -f statefulset-definition.yaml
+
+-Scale up:
+kubectl scale statefulset <statefulset_name> --replicas=5   || => scale up or down occurs sequencially
+
+-Delete:
+kubectl delete statefulset <statefulset_name>   || =>all pods are deleted sequencially from newest instance to master
 
 
 ==================================================================================================================================================================================================

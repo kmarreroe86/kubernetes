@@ -1,0 +1,23 @@
+# Same as a deployment
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+ name: mysql
+ labels:
+   app: mysql
+spec:
+  serviceName: mysql-h
+  selector:
+    matchLabels:
+     app: myapp # Same as label in the template section for the pod
+  replicas: 4
+  template: # template of the pods
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: mysql
+          image: mysql
+  podManagementPolicy: Parallel # Parallel, OrderReady => default option
+      
