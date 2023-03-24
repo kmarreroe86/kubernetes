@@ -1,0 +1,196 @@
+https://youtu.be/CV_Uf3Dq-EU?t=1552
+Course documentation:
+https://riseofthecontainers.github.io/docker/02-y-metadata/
+Video ok: https://www.youtube.com/watch?v=CV_Uf3Dq-EU&t=1514s
+          https://github.com/pablokbs/peladonerd/tree/master/docker/12
+Onlide doc: https://docs.docker.com/engine/reference/commandline/build/
+The default Docker Host IP is always 10.0.75.1
+
+-- List all running containers
+docker ps
+
+-- List all running/stoped containers
+docker ps -a
+
+-- List of details of a container:
+docker inspect <container_name> or <container_id>
+
+-- List all volumes:
+docker volume ls
+
+-- To run container in interactive mode:
+docker run -it <image_name>
+
+-- To run specific image as a process(run in background):
+docker run -d <image_name>
+
+-- Init docker container:
+docker start <container_id>
+
+-- List logs from container running in background:
+docker logs <container_name>
+
+-- Run specific tag of an image:
+docker run <image_name>:<tag>
+
+-- To run specific name --
+docker run --name <specific_name> <image_name>
+
+-- Re attach to docker container previously running detached(with -d option):
+docker attach <container_id>
+
+-- To run container in port 3000, but is access from port 4000 of host machine:
+docker run -p 4000:3000 <image_name>
+
+-- Stop running container --
+docker stop <container_id> or <container_name>
+
+
+-- List all running container ids:
+docker ps -a -q
+
+-- Stop all running containers:
+docker stop $(docker ps -a -q)
+
+-- Remove all containers
+docker rm $(docker ps -a -q)
+
+-- Remove a container:
+docker rm <name_of_the_container>
+
+-- Remove multiple containers at once:
+docker rm <list of space separated container_id>
+
+-- List stored images --
+docker images
+docker image ls
+docker image | head
+
+-- Remove image:
+docker rmi <name_of_image>
+
+-- Download the image:
+docker pull <name_of_the_image>
+
+-- Run command inside a running container:
+docker exec <container_id> <command>
+
+-- Create a new network:
+docker network create --driver <none,bridge,host> --subnet 182.18.0.1/24 --gateway 182.18.0.1 <network_name>
+docker network create --driver bridge --subnet 182.18.0.1/24 --gateway 182.18.0.1 wp-mysql-network
+
+-- List all existing networks in the system:
+docker network ls
+
+-- List of details of a network:
+docker inspect <network_name>
+
+--Attach specific network to a container:
+docker run -d --name alpine-2 --network=<none, bridge> alpine
+
+-- Map volume from the Docker Host to the container(Use for databases):
+docker run -v <path_in_docker_host>:<path_in_the_container> <image_name>
+docker run -v /opt/datadir:/var/lib/mysql mysql
+docker run -d --name mysql-db -e MYSQL_ROOT_PASSWORD=db_pass123 -v /opt/data:/var/lib/mysql mysql
+docker run --name mysql-database -e MYSQL_ROOT_PASSWORD=password1 -p 3306:3306 --rm -d -v mysql:/var/lib/mysql mysql
+docker run -d --name postgres-container -e POSTGRES_PASSWORD=password -p 5432:5432 -v postgresdbdata:/var/lib/postgres/data postgres:alpine
+
+Create extension for uuid:(generate uuid values)
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+insert into person values (uuid_generate_v4(), 'Jane', 24)
+
+-- Remove all unused volume:
+docker volume prune
+
+-- Remove volume:
+docker volume rm <volume_name>
+
+-- Upload image to repository:
+docker login
+docker tag <image_id> <username>/image_name:tag
+docker push <username>/image_name:tag
+ej: docker tag 78b6f5562d5f kmarrero/java-app-image:v2
+docker push kmarrero/java-app-image:v2
+=================================================================================================================================================================
+=================================================================================================================================================================
+Dockerizing:
+1- Create dockerfile with instructions
+
+2- Run: 
+docker build <Dockerfile_dir> -t <tag_name_for_the_image>
+ej: docker build . -t kmarrero/my-custom-app
+
+3- Push to repository dockerhub:
+docker push <name_of_image>
+
+-- To build docker image:
+docker build . -t image_name
+
+-- Set tag to image:
+docker image tag <image_id> new_tag
+ej: docker  image tag 2e20929c6c95 kmarrero/my-custom-app:latest
+
+Enviroment variables:
+docker run -e <NAME_OF_VARIABLE>=<value> <image_name>
+
+=================================================================================================================================================================
+=================================================================================================================================================================
+Docker Compose:
+-- Run docker compose file instructions:
+docker-compose up -d
+
+-- Stop all containes inside docker compose:
+docker-compose down
+
+Ex:
+version: '3.0'
+services:
+  db:
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    image: postgres
+  wordpress:
+    image: wordpress
+    links:
+    - db
+    ports:
+    - 8085:80
+
+=================================================================================================================================================================
+=================================================================================================================================================================
+-- Run multiple containers
+docker service create --replicas=<# of replicas to be ran> <image_name>
+ej: docker service create --replicas=3 my-web-server
+
+=================================================================================================================================================================
+=================================================================================================================================================================
+Install and run MongoDB:(default port of mongo 27017)
+
+-Pull the image
+docker pull mongo
+
+-Run the container:
+docker run -d --name mongodb mongo
+
+-Run the container with volume associated(Volume will be created if not exists yet):
+docker run -d -v mongodbvol:/data/db --name mongodb mongo
+
+
+
+-Interact shell:
+docker exec -it mongodb bash
+
+
+=================================================================================================================================================================
+=================================================================================================================================================================
+Kubernetes:
+
+--Get name of the cluster:
+kubectl config current-context
+
+--Create secret:
+kubectl create secret generic catalog-secrets --from-literal=mongo-password='pass#word1'
+
+
+--Create service:
+kubectl expose deployment <deployment_name> --name=<service_name> --port=<> --targetPort=<> --type=LoadBalancer
