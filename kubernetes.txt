@@ -11,6 +11,7 @@ https://github.com/lucassha/CKAD-resources
 
 -List all resources:
 kubectl get all
+kubectl get api-resources
 
 -Apply changes:
 apply -f <file_name>
@@ -157,6 +158,9 @@ kubectl create deployment webapp --image=kodekloud/webapp-color --replicas=3
 
 -Create deployment in certain namespace using command:
 kubectl create deployment redis-deploy --image=redis --replicas=2 -n=dev-ns
+
+-Scale pod from deployment:
+kubectl scale deployment --replicas=1 <deployment_name>
 
 
 
@@ -331,7 +335,7 @@ kubectl describe netpol <networkpoliciy_name>
 
 
 
-=== === === === === === === === === === === === === === === === === === === === === Persistente Volume === === === === === === === === === === === === === === === === === === === ===
+=== === === === === === === === === === === === === === === === === === === === === Persistent Volume === === === === === === === === === === === === === === === === === === === ===
 Reference: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes
 *** User creates persistent volume claim to use the storage
     -PersistentVolumeClaim is binding to a PersistentVolume
@@ -370,6 +374,19 @@ kubectl scale statefulset <statefulset_name> --replicas=5   || => scale up or do
 -Delete:
 kubectl delete statefulset <statefulset_name>   || =>all pods are deleted sequencially from newest instance to master
 
+
+
+
+=== === === === === === === === === === === === === === === === === === === === === Ingress and Egress === === === === === === === === === === === === === === === === === === === ===
+Ingress: exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined on the Ingress resource.
+-https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+
+
+=== === === === === === === === === === === === === === === === === === === === === Blue/Green deployment === === === === === === === === === === === === === === === === === === === ===
+
+Blue/Green deployments: new version is deployed adn test are ran, after that all traffic is redirected from blue(old version) to the new one
+Canary updates: Small percentage of the traffic is routed to the new version, if everything goes well, old version is replaced
 
 ==================================================================================================================================================================================================
 ˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜
